@@ -130,3 +130,16 @@ export async function createBooking(tripId: string) {
     revalidatePath("/bookings")
     redirect("/bookings")
 }
+
+export async function updateBookingStatus(bookingId: string, status: 'PENDING' | 'CONFIRMED' | 'CANCELLED') {
+    try {
+        await prisma.booking.update({
+            where: { id: bookingId },
+            data: { status }
+        })
+    } catch (error) {
+        console.error("Database Error:", error)
+        throw new Error("Failed to update booking status.")
+    }
+    revalidatePath("/admin/bookings")
+}
